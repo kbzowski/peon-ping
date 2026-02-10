@@ -359,6 +359,205 @@ a:hover { text-decoration: underline; }
 }
 @keyframes blink { 50% { opacity: 0; } }
 
+/* --- Sound packs carousel --- */
+.carousel-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.carousel-viewport {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.carousel-slide {
+  display: none;
+  animation: carouselFadeIn 0.35s ease;
+}
+.carousel-slide.active { display: block; }
+@keyframes carouselFadeIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.carousel-arrow {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--wc3-card-border);
+  background: var(--wc3-card-bg);
+  color: var(--wc3-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.carousel-arrow:hover {
+  border-color: rgba(var(--wc3-gold-rgb), 0.5);
+  color: var(--wc3-gold);
+  background: rgba(var(--wc3-gold-rgb), 0.06);
+}
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--wc3-text-dim);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+.carousel-dot.active {
+  background: var(--wc3-gold);
+  border-color: var(--wc3-gold);
+  box-shadow: 0 0 8px rgba(var(--wc3-gold-rgb), 0.4);
+}
+.carousel-dot:hover { border-color: var(--wc3-gold); }
+
+.pack-card-full {
+  border: 18px solid transparent;
+  border-image-source: url('textures/card-bg.webp');
+  border-image-slice: 24 fill;
+  border-image-repeat: stretch;
+  padding: 24px 20px;
+}
+.pack-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.pack-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--wc3-gold);
+  margin-bottom: 4px;
+}
+.pack-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--wc3-text-primary);
+  text-shadow: var(--wc3-text-shadow-lg);
+  margin-bottom: 2px;
+}
+.pack-game {
+  font-size: 0.82rem;
+  color: var(--wc3-text-muted);
+}
+.pack-id {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--wc3-text-dim);
+  background: rgba(255,255,255,0.04);
+  padding: 3px 10px;
+  border-radius: 3px;
+  margin-top: 6px;
+}
+.pack-credit {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--wc3-text-dim);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.pack-credit a { color: var(--wc3-text-muted); }
+.pack-credit a:hover { color: var(--wc3-gold); }
+.pack-sounds {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.pack-sound-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: inherit;
+}
+.pack-sound-btn:hover {
+  background: rgba(var(--wc3-gold-rgb), 0.08);
+  border-color: rgba(var(--wc3-gold-rgb), 0.25);
+}
+.pack-sound-btn.playing {
+  background: rgba(var(--wc3-gold-rgb), 0.12);
+  border-color: rgba(var(--wc3-gold-rgb), 0.4);
+  box-shadow: 0 0 12px rgba(var(--wc3-gold-rgb), 0.15);
+}
+.pack-sound-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(var(--wc3-gold-rgb), 0.1);
+  border: 1px solid rgba(var(--wc3-gold-rgb), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--wc3-gold);
+  transition: background 0.2s;
+}
+.pack-sound-btn:hover .pack-sound-icon { background: rgba(var(--wc3-gold-rgb), 0.2); }
+.pack-sound-btn.playing .pack-sound-icon { background: rgba(var(--wc3-gold-rgb), 0.35); }
+.pack-sound-quote {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--wc3-text-body);
+  font-style: italic;
+  text-shadow: var(--wc3-text-shadow);
+  text-align: center;
+  line-height: 1.3;
+}
+.pack-sound-cat {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--wc3-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.contribute-cta {
+  text-align: center;
+  padding: 24px;
+  border: 1px solid var(--wc3-card-border);
+  border-radius: 4px;
+  background: var(--wc3-card-bg);
+}
+.contribute-cta p {
+  font-size: 0.9rem;
+  color: var(--wc3-text-muted);
+  line-height: 1.6;
+}
+.contribute-cta code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--wc3-text-bright);
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.contribute-ideas {
+  margin-top: 8px;
+  font-size: 0.8rem !important;
+  color: var(--wc3-text-dim) !important;
+  font-style: italic;
+}
+
 /* --- Features strip (accent stripe) --- */
 .features-grid {
   display: grid;
@@ -434,6 +633,10 @@ footer a:hover { color: var(--wc3-gold); }
   .fix-table-wrap { border-width: 14px; }
   .audio-grid { grid-template-columns: repeat(2, 1fr); }
   .audio-card { border-width: 12px; }
+  .pack-sounds { grid-template-columns: repeat(2, 1fr); }
+  .pack-card-full { border-width: 14px; padding: 16px 12px; }
+  .carousel-arrow { width: 32px; height: 32px; }
+  .carousel-arrow svg { width: 16px; height: 16px; }
   .features-grid { grid-template-columns: 1fr; }
   .features-grid .feature-card:last-child {
     max-width: 100%;
@@ -465,7 +668,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--wc3-card-border) var(--wc3-
 ::selection { background: rgba(var(--wc3-gold-rgb), 0.3); color: var(--wc3-text-primary); }
 
 /* --- Textured elements --- */
-.wc3-card, .wc3-card-lg, .audio-card, .fix-table-wrap, .install-block, .wc3-button {
+.wc3-card, .wc3-card-lg, .audio-card, .pack-card-full, .fix-table-wrap, .install-block, .wc3-button {
   image-rendering: pixelated;
 }
 
@@ -701,6 +904,127 @@ html { scrollbar-width: thin; scrollbar-color: var(--wc3-card-border) var(--wc3-
 </div>
 </section>
 
+<!-- ============ SOUND PACKS CAROUSEL ============ -->
+<section id="packs">
+<div class="container">
+  <p class="section-label">Sound packs</p>
+  <h2 class="section-title">Choose your character</h2>
+  <p class="section-desc">Swap packs with one line in config. Click sounds to preview.</p>
+
+  <div class="carousel-wrap">
+    <button class="carousel-arrow carousel-prev" aria-label="Previous pack">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>
+    </button>
+
+    <div class="carousel-viewport">
+      <!-- Pack 1: Orc Peon -->
+      <div class="carousel-slide active" data-pack="peon">
+        <div class="pack-card-full">
+          <div class="pack-header">
+            <div class="pack-badge">Default</div>
+            <div class="pack-name">Orc Peon</div>
+            <div class="pack-game">Warcraft III</div>
+            <code class="pack-id">peon</code>
+            <div class="pack-credit">Added by <a href="https://github.com/tonyyont">@tonyyont</a></div>
+          </div>
+          <div class="pack-sounds">
+            <button class="pack-sound-btn" data-src="audio/PeonReady1.ogg" aria-label="Play: Ready to work?">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Ready to work?"</span>
+              <span class="pack-sound-cat">greeting</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/PeonYes3.ogg" aria-label="Play: Work, work.">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Work, work."</span>
+              <span class="pack-sound-cat">acknowledge</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/PeonYes4.ogg" aria-label="Play: Okie dokie.">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Okie dokie."</span>
+              <span class="pack-sound-cat">acknowledge</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/PeonWhat4.ogg" aria-label="Play: Something need doing?">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Something need doing?"</span>
+              <span class="pack-sound-cat">permission</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/PeonAngry4.ogg" aria-label="Play: Me not that kind of orc!">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Me not that kind of orc!"</span>
+              <span class="pack-sound-cat">error</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/PeonWhat3.ogg" aria-label="Play: What you want?">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"What you want?"</span>
+              <span class="pack-sound-cat">permission</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pack 2: Soviet Engineer -->
+      <div class="carousel-slide" data-pack="ra2_soviet_engineer">
+        <div class="pack-card-full">
+          <div class="pack-header">
+            <div class="pack-badge">New</div>
+            <div class="pack-name">Soviet Engineer</div>
+            <div class="pack-game">Red Alert 2</div>
+            <code class="pack-id">ra2_soviet_engineer</code>
+            <div class="pack-credit">Added by <a href="https://github.com/msukkari">@msukkari</a></div>
+          </div>
+          <div class="pack-sounds">
+            <button class="pack-sound-btn" data-src="audio/ToolsReady.mp3" aria-label="Play: Tools ready">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Tools ready"</span>
+              <span class="pack-sound-cat">greeting</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/YesCommander.mp3" aria-label="Play: Yes, commander">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Yes, commander"</span>
+              <span class="pack-sound-cat">greeting</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/Engineering.mp3" aria-label="Play: Engineering">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Engineering"</span>
+              <span class="pack-sound-cat">acknowledge</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/PowerUp.mp3" aria-label="Play: Power up">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Power up"</span>
+              <span class="pack-sound-cat">acknowledge</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/GetMeOuttaHere.mp3" aria-label="Play: Get me outta here!">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Get me outta here!"</span>
+              <span class="pack-sound-cat">error</span>
+            </button>
+            <button class="pack-sound-btn" data-src="audio/CheckingDesigns.mp3" aria-label="Play: Checking designs">
+              <span class="pack-sound-icon">&#9654;</span>
+              <span class="pack-sound-quote">"Checking designs"</span>
+              <span class="pack-sound-cat">acknowledge</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="carousel-arrow carousel-next" aria-label="Next pack">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>
+    </button>
+  </div>
+
+  <div class="carousel-dots">
+    <button class="carousel-dot active" data-index="0" aria-label="Orc Peon"></button>
+    <button class="carousel-dot" data-index="1" aria-label="Soviet Engineer"></button>
+  </div>
+
+  <div class="contribute-cta">
+    <p>Want to add a pack? Drop your sound files in <code>packs/&lt;name&gt;/sounds/</code>, add a manifest, and <a href="https://github.com/tonyyont/peon-ping/pulls">open a PR</a>.</p>
+    <p class="contribute-ideas">Ideas: Human Peasant, Night Elf Wisp, Undead Acolyte, Protoss Probe, SCV, GLaDOS &hellip;</p>
+  </div>
+</div>
+</section>
+
 <!-- ============ FEATURES ============ -->
 <section id="features">
 <div class="container">
@@ -739,7 +1063,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--wc3-card-border) var(--wc3-
       <div class="feature-icon">&#x1f4e6;</div>
       <div class="feature-text">
         <h3>Pack system</h3>
-        <p>Swappable character packs. Peasant, Wisp, Acolyte &mdash; coming soon.</p>
+        <p>Orc Peon, Soviet Engineer, and more. <a href="#packs">Submit your own.</a></p>
       </div>
     </div>
   </div>
@@ -762,7 +1086,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--wc3-card-border) var(--wc3-
 <footer>
 <div class="container">
   <p>MIT License &middot; <a href="https://github.com/tonyyont/peon-ping">GitHub</a></p>
-  <p>Sound files are property of Blizzard Entertainment. Downloaded separately at install time.</p>
+  <p>Sound files are property of their respective publishers. <a href="https://github.com/tonyyont/peon-ping/pulls">Contribute a pack</a></p>
 </div>
 </footer>
 
@@ -891,6 +1215,65 @@ const termObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.3 });
 
 termObserver.observe(document.getElementById('terminalDemo'));
+
+// --- Pack carousel ---
+const slides = document.querySelectorAll('.carousel-slide');
+const dots = document.querySelectorAll('.carousel-dot');
+let packIndex = 0;
+let packAudio = null;
+let packPlayingBtn = null;
+
+function stopPackAudio() {
+  if (packAudio) { packAudio.pause(); packAudio.currentTime = 0; packAudio = null; }
+  if (packPlayingBtn) { packPlayingBtn.classList.remove('playing'); packPlayingBtn.querySelector('.pack-sound-icon').innerHTML = '&#9654;'; packPlayingBtn = null; }
+}
+
+function goToSlide(i) {
+  stopPackAudio();
+  slides.forEach(s => s.classList.remove('active'));
+  dots.forEach(d => d.classList.remove('active'));
+  packIndex = (i + slides.length) % slides.length;
+  slides[packIndex].classList.add('active');
+  dots[packIndex].classList.add('active');
+}
+
+document.querySelector('.carousel-prev').addEventListener('click', () => goToSlide(packIndex - 1));
+document.querySelector('.carousel-next').addEventListener('click', () => goToSlide(packIndex + 1));
+dots.forEach(dot => dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index))));
+
+// Pack sound preview buttons
+document.querySelectorAll('.pack-sound-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const src = btn.dataset.src;
+    // Toggle off if same button
+    if (packPlayingBtn === btn && packAudio && !packAudio.paused) {
+      stopPackAudio();
+      return;
+    }
+    stopPackAudio();
+    // Also stop the audio-card sounds
+    if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+    if (currentCard) { currentCard.classList.remove('playing'); currentCard.querySelector('.audio-play-icon').innerHTML = '&#9654;'; currentAudio = null; currentCard = null; }
+
+    packAudio = new Audio(src);
+    packAudio.play().catch(() => {});
+    btn.classList.add('playing');
+    btn.querySelector('.pack-sound-icon').innerHTML = '&#9632;';
+    packPlayingBtn = btn;
+    packAudio.addEventListener('ended', () => {
+      btn.classList.remove('playing');
+      btn.querySelector('.pack-sound-icon').innerHTML = '&#9654;';
+      packAudio = null;
+      packPlayingBtn = null;
+    });
+  });
+});
+
+// Keyboard support for carousel
+document.getElementById('packs').addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') goToSlide(packIndex - 1);
+  if (e.key === 'ArrowRight') goToSlide(packIndex + 1);
+});
 </script>
 </body>
 </html>

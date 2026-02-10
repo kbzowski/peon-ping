@@ -1,7 +1,7 @@
 #!/bin/bash
 # peon-ping installer
 # Works both via `curl | bash` (downloads from GitHub) and local clone
-# Re-running updates core files; re-downloads sounds only when packs change
+# Re-running updates core files; sounds are version-controlled in the repo
 set -euo pipefail
 
 INSTALL_DIR="$HOME/.claude/hooks/peon-ping"
@@ -9,7 +9,7 @@ SETTINGS="$HOME/.claude/settings.json"
 REPO_BASE="https://raw.githubusercontent.com/tonyyont/peon-ping/main"
 
 # All available sound packs (add new packs here)
-PACKS="peon"
+PACKS="peon ra2_soviet_engineer"
 
 # --- Detect update vs fresh install ---
 UPDATING=false
@@ -47,17 +47,6 @@ if [ ! -d "$HOME/.claude" ]; then
   exit 1
 fi
 
-# --- Snapshot manifest hashes before update ---
-declare -A OLD_HASHES 2>/dev/null || true
-for pack in $PACKS; do
-  manifest="$INSTALL_DIR/packs/$pack/manifest.json"
-  if [ -f "$manifest" ]; then
-    OLD_HASHES[$pack]=$(md5 -q "$manifest" 2>/dev/null || echo "none")
-  else
-    OLD_HASHES[$pack]="none"
-  fi
-done
-
 # --- Detect if running from local clone or curl|bash ---
 SCRIPT_DIR=""
 if [ -n "${BASH_SOURCE[0]:-}" ] && [ "${BASH_SOURCE[0]}" != "bash" ]; then
@@ -69,26 +58,41 @@ fi
 
 # --- Install/update core files ---
 for pack in $PACKS; do
-  mkdir -p "$INSTALL_DIR/packs/$pack"
+  mkdir -p "$INSTALL_DIR/packs/$pack/sounds"
 done
-mkdir -p "$INSTALL_DIR/scripts"
 
 if [ -n "$SCRIPT_DIR" ]; then
-  # Local clone — copy files directly
+  # Local clone — copy files directly (including sounds)
   cp -r "$SCRIPT_DIR/packs/"* "$INSTALL_DIR/packs/"
-  cp "$SCRIPT_DIR/scripts/download-sounds.sh" "$INSTALL_DIR/scripts/"
   cp "$SCRIPT_DIR/peon.sh" "$INSTALL_DIR/"
   if [ "$UPDATING" = false ]; then
     cp "$SCRIPT_DIR/config.json" "$INSTALL_DIR/"
   fi
 else
-  # curl|bash — download from GitHub
+  # curl|bash — download from GitHub (sounds are version-controlled in repo)
   echo "Downloading from GitHub..."
   curl -fsSL "$REPO_BASE/peon.sh" -o "$INSTALL_DIR/peon.sh"
-  curl -fsSL "$REPO_BASE/scripts/download-sounds.sh" -o "$INSTALL_DIR/scripts/download-sounds.sh"
   curl -fsSL "$REPO_BASE/uninstall.sh" -o "$INSTALL_DIR/uninstall.sh"
   for pack in $PACKS; do
     curl -fsSL "$REPO_BASE/packs/$pack/manifest.json" -o "$INSTALL_DIR/packs/$pack/manifest.json"
+  done
+  # Download sound files for each pack
+  for pack in $PACKS; do
+    manifest="$INSTALL_DIR/packs/$pack/manifest.json"
+    # Extract sound filenames from manifest and download each one
+    /usr/bin/python3 -c "
+import json
+m = json.load(open('$manifest'))
+seen = set()
+for cat in m.get('categories', {}).values():
+    for s in cat.get('sounds', []):
+        f = s['file']
+        if f not in seen:
+            seen.add(f)
+            print(f)
+" | while read -r sfile; do
+      curl -fsSL "$REPO_BASE/packs/$pack/sounds/$sfile" -o "$INSTALL_DIR/packs/$pack/sounds/$sfile"
+    done
   done
   if [ "$UPDATING" = false ]; then
     curl -fsSL "$REPO_BASE/config.json" -o "$INSTALL_DIR/config.json"
@@ -96,25 +100,16 @@ else
 fi
 
 chmod +x "$INSTALL_DIR/peon.sh"
-chmod +x "$INSTALL_DIR/scripts/download-sounds.sh"
 
-# --- Download sounds per pack (skip if manifest unchanged) ---
+# --- Verify sounds are installed ---
 echo ""
 for pack in $PACKS; do
-  manifest="$INSTALL_DIR/packs/$pack/manifest.json"
-  new_hash=$(md5 -q "$manifest" 2>/dev/null || echo "new")
-  old_hash="${OLD_HASHES[$pack]:-none}"
   sound_dir="$INSTALL_DIR/packs/$pack/sounds"
-  sound_count=$(ls "$sound_dir"/*.wav 2>/dev/null | wc -l | tr -d ' ' 2>/dev/null || echo "0")
-
-  if [ "$old_hash" = "none" ] || [ "$sound_count" -eq 0 ]; then
-    echo "[$pack] New pack — downloading sounds..."
-    bash "$INSTALL_DIR/scripts/download-sounds.sh" "$INSTALL_DIR" "$pack"
-  elif [ "$old_hash" != "$new_hash" ]; then
-    echo "[$pack] Pack updated — re-downloading sounds..."
-    bash "$INSTALL_DIR/scripts/download-sounds.sh" "$INSTALL_DIR" "$pack"
+  sound_count=$({ ls "$sound_dir"/*.wav "$sound_dir"/*.mp3 "$sound_dir"/*.ogg 2>/dev/null || true; } | wc -l | tr -d ' ')
+  if [ "$sound_count" -eq 0 ]; then
+    echo "[$pack] Warning: No sound files found!"
   else
-    echo "[$pack] Sounds up to date ($sound_count files)."
+    echo "[$pack] $sound_count sound files installed."
   fi
 done
 
@@ -200,7 +195,7 @@ except:
     print('peon')
 " 2>/dev/null)
 PACK_DIR="$INSTALL_DIR/packs/$ACTIVE_PACK"
-TEST_SOUND=$(ls "$PACK_DIR/sounds/"*.wav 2>/dev/null | head -1)
+TEST_SOUND=$({ ls "$PACK_DIR/sounds/"*.wav "$PACK_DIR/sounds/"*.mp3 "$PACK_DIR/sounds/"*.ogg 2>/dev/null || true; } | head -1)
 if [ -n "$TEST_SOUND" ]; then
   afplay -v 0.3 "$TEST_SOUND"
   echo "Sound working!"

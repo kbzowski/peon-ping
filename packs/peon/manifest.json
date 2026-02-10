@@ -1,8 +1,6 @@
 {
   "name": "peon",
   "display_name": "Orc Peon",
-  "source_url": "https://sounds.spriters-resource.com/media/assets/422/425494.zip",
-  "source_subfolder": "Orc/Peon",
   "categories": {
     "greeting": {
       "sounds": [

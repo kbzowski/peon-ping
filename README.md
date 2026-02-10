@@ -51,15 +51,20 @@ Edit `~/.claude/hooks/peon-ping/config.json`:
 - **categories**: Toggle individual sound types on/off
 - **annoyed_threshold / annoyed_window_seconds**: How many prompts in N seconds triggers the easter egg
 
-## Character packs
+## Sound packs
 
-Swappable sound packs. To add one:
+| Pack | Character | Sounds |
+|---|---|---|
+| `peon` (default) | Orc Peon (Warcraft III) | "Ready to work?", "Work, work.", "Okie dokie." |
+| `ra2_soviet_engineer` | Soviet Engineer (Red Alert 2) | "Tools ready", "Yes, commander", "Engineering" |
 
-1. Create `packs/<name>/manifest.json` (see `packs/peon/manifest.json`)
-2. Set `"active_pack": "<name>"` in config.json
-3. Run `bash scripts/download-sounds.sh ~/.claude/hooks/peon-ping <name>`
+Switch packs in `~/.claude/hooks/peon-ping/config.json`:
 
-Coming soon: Human Peasant ("Job's done!"), Night Elf Wisp, Undead Acolyte.
+```json
+{ "active_pack": "ra2_soviet_engineer" }
+```
+
+Want to add your own pack? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Uninstall
 
@@ -77,7 +82,7 @@ bash ~/.claude/hooks/peon-ping/uninstall.sh
 
 `peon.sh` is a Claude Code hook registered for `SessionStart`, `UserPromptSubmit`, `Stop`, and `Notification` events. On each event it maps to a sound category, picks a random voice line (avoiding repeats), plays it via `afplay`, and updates your Terminal tab title.
 
-Sound files are property of Blizzard Entertainment and are downloaded separately at install time from [The Sounds Resource](https://www.sounds-resource.com/).
+Sound files are property of their respective publishers (Blizzard Entertainment, EA) and are included in the repo for convenience.
 
 ## Links
 
