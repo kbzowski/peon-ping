@@ -29,11 +29,12 @@ function Play-Sound {
     )
 
     # Use SoundPlayer instead of MediaPlayer - more reliable in background
+    # PlaySync() blocks until sound finishes, preventing process from exiting early
     Start-Process powershell.exe -ArgumentList @(
         '-NoProfile',
         '-WindowStyle', 'Hidden',
         '-Command',
-        "`$player = New-Object System.Media.SoundPlayer; `$player.SoundLocation = '$File'; `$player.Play()"
+        "`$player = New-Object System.Media.SoundPlayer; `$player.SoundLocation = '$File'; `$player.PlaySync()"
     ) -WindowStyle Hidden
 }
 
@@ -284,8 +285,17 @@ Commands:
 }
 
 # --- Read input from stdin ---
-$input = [Console]::In.ReadToEnd()
-if (-not $input) { exit 0 }
+# Use automatic $input variable for piped data, or read from console
+$inputData = if ($input) {
+    ($input | Out-String).Trim()
+} else {
+    try {
+        [Console]::In.ReadToEnd()
+    } catch {
+        ""
+    }
+}
+if (-not $inputData) { exit 0 }
 
 # Check if paused
 $paused = Test-Path $PausedFile
@@ -481,7 +491,7 @@ output = {
 print(json.dumps(output, ensure_ascii=False))
 "@
 
-$result = $input | & $pythonCmd -c $pythonScript 2>$null
+$result = $inputData | & $pythonCmd -c $pythonScript 2>$null
 if (-not $result) { exit 0 }
 
 $output = $result | ConvertFrom-Json
